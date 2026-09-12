@@ -160,7 +160,7 @@ namespace Squidbasket.Gameplay
 
         private void OnCollisionEnter(Collision collision)
         {
-            if((LayerMask.NameToLayer("Ground") & collision.gameObject.layer) != 0)
+            if(LayerMask.NameToLayer("Ground") == collision.gameObject.layer)
             {
                 OnSettled();
             }
