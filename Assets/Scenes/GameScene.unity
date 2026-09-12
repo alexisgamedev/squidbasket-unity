@@ -1488,7 +1488,7 @@ MonoBehaviour:
   ballHand: {fileID: 59235694}
   shootingHandAnchor: {fileID: 566379202}
   freeThrowLineAnchor: {fileID: 1366719802}
-  inputSourceBehaviour: {fileID: 1223536989}
+  input: {fileID: 1223536989}
   powerBarMin: 0
   powerBarMax: 1
   powerBarSpeed: 1
@@ -1522,13 +1522,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 970e4ba25be3d654994898f931f99caa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
-  actionMapName: Player
-  moveActionName: Move
-  lookActionName: Look
-  shootActionName: Shoot
-  resetActionName: Reset
-  restartActionName: Restart
+  moveAction: {fileID: -1680190386980627800, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+  lookAction: {fileID: -5630151704836100654, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+  shootAction: {fileID: -5542205008124981033, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+  resetAction: {fileID: -4684019823974651922, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+  restartAction: {fileID: -2681863693677866194, guid: 052faaac586de48259a63d0c4782560b, type: 3}
 --- !u!143 &1223536990
 CharacterController:
   m_ObjectHideFlags: 0
@@ -1895,7 +1893,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   scoreSystem: {fileID: 1977949534}
-  inputSourceBehaviour: {fileID: 1223536989}
+  input: {fileID: 1223536989}
 --- !u!4 &1939122619
 Transform:
   m_ObjectHideFlags: 0

@@ -2,7 +2,6 @@
     "name": "Squidbasket.Input",
     "rootNamespace": "Squidbasket.Input",
     "references": [
-        "Squidbasket.Runtime",
         "Unity.InputSystem"
     ],
     "includePlatforms": [],

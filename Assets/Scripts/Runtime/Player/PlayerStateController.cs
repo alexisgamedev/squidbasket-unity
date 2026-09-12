@@ -1,5 +1,6 @@
 using Squidbasket.Camera;
 using Squidbasket.Gameplay;
+using Squidbasket.Input;
 using Squidbasket.Scoring;
 using UnityEngine;
 
@@ -27,7 +28,7 @@ namespace Squidbasket.Player
         [SerializeField] private Transform shootingHandAnchor;
 
         [SerializeField] private Transform freeThrowLineAnchor;
-        [SerializeField] private MonoBehaviour inputSourceBehaviour;
+        [SerializeField] private UnityInputPlayerInputSource input;
 
         [Header("Shooting")]
         [SerializeField] private float powerBarMin;
@@ -38,7 +39,6 @@ namespace Squidbasket.Player
         [SerializeField] private float shotUpArcScale = 0.6f;
         [SerializeField] private float cameraBlendSpeed = 8f;
 
-        private IPlayerInputSource _input;
         private PlayerMovement _movement;
         private PlayerFsm _fsm;
         private WalkingState _walking;
@@ -56,15 +56,14 @@ namespace Squidbasket.Player
 
         private void Awake()
         {
-            _input = inputSourceBehaviour as IPlayerInputSource;
             _movement = GetComponent<PlayerMovement>();
             _fsm = new PlayerFsm();
 
-            if (_input == null)
+            if (input == null)
             {
                 Debug.LogError(
-                    $"{nameof(PlayerStateController)} has no {nameof(inputSourceBehaviour)} assigned, or it " +
-                    $"doesn't implement {nameof(IPlayerInputSource)} — the player will not respond to input.",
+                    $"{nameof(PlayerStateController)} has no {nameof(input)} assigned — the player will not " +
+                    "respond to input.",
                     this);
             }
 
@@ -76,7 +75,7 @@ namespace Squidbasket.Player
             WarnIfAnchorMissing(shootingHandAnchor, nameof(shootingHandAnchor), "Shooting");
 
             var powerBar = new PowerBarOscillator(powerBarMin, powerBarMax, powerBarSpeed);
-            _walking = new WalkingState(_movement, _input, sharedCamera.transform);
+            _walking = new WalkingState(_movement, input, sharedCamera.transform);
             _shooting = new ShootingState(_movement, powerBar, bulletTimeScale, ball, shootingHandAnchor);
             _current = _walking;
         }
@@ -113,7 +112,7 @@ namespace Squidbasket.Player
 
         private void Update()
         {
-            if (_input == null)
+            if (input == null)
             {
                 return;
             }
@@ -135,7 +134,7 @@ namespace Squidbasket.Player
         private void TickWalking(float deltaTime)
         {
             bool canShoot = ball != null && ball.IsHeldByPlayer;
-            if (canShoot && _fsm.TryEnterShooting(_input.ShootHeld))
+            if (canShoot && _fsm.TryEnterShooting(input.ShootHeld))
             {
                 firstPersonCamera.SetOrientation(thirdPersonCamera.Yaw, thirdPersonCamera.Pitch);
                 _current.Exit();
@@ -146,7 +145,7 @@ namespace Squidbasket.Player
 
             _current.Tick(deltaTime);
 
-            if (_fsm.CanReset() && _input.ResetPressed)
+            if (_fsm.CanReset() && input.ResetPressed)
             {
                 PerformReset();
             }
@@ -156,7 +155,7 @@ namespace Squidbasket.Player
         {
             _current.Tick(deltaTime);
 
-            bool shootReleased = !_input.ShootHeld;
+            bool shootReleased = !input.ShootHeld;
             bool timedOut = _shooting.PowerBar.HasTimedOut;
 
             if (_fsm.TryExitShooting(shootReleased, timedOut))
@@ -209,8 +208,8 @@ namespace Squidbasket.Player
         private void UpdateCamera(float deltaTime)
         {
             CameraPose desired = IsShooting
-                ? firstPersonCamera.GetDesiredPose(cameraPivot, _input.LookInput)
-                : thirdPersonCamera.GetDesiredPose(cameraPivot, _input.LookInput);
+                ? firstPersonCamera.GetDesiredPose(cameraPivot, input.LookInput)
+                : thirdPersonCamera.GetDesiredPose(cameraPivot, input.LookInput);
 
             Transform cam = sharedCamera.transform;
             float t = 1f - Mathf.Exp(-cameraBlendSpeed * deltaTime);

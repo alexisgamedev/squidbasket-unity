@@ -65,7 +65,7 @@ namespace Squidbasket.EditorTools
             var restartHandler = restartHandlerGo.AddComponent<RestartInputHandler>();
             var restartSerialized = new SerializedObject(restartHandler);
             restartSerialized.FindProperty("scoreSystem").objectReferenceValue = scoreSystem;
-            restartSerialized.FindProperty("inputSourceBehaviour").objectReferenceValue = inputSource;
+            restartSerialized.FindProperty("input").objectReferenceValue = inputSource;
             restartSerialized.ApplyModifiedPropertiesWithoutUndo();
 
             EditorSceneManager.MarkSceneDirty(scene);

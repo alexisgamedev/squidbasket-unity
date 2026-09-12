@@ -1,3 +1,4 @@
+using Squidbasket.Input;
 using Squidbasket.Player;
 using UnityEngine;
 
@@ -12,18 +13,11 @@ namespace Squidbasket.Scoring
     public sealed class RestartInputHandler : MonoBehaviour
     {
         [SerializeField] private ScoreSystem scoreSystem;
-        [SerializeField] private MonoBehaviour inputSourceBehaviour;
-
-        private IPlayerInputSource _input;
-
-        private void Awake()
-        {
-            _input = inputSourceBehaviour as IPlayerInputSource;
-        }
+        [SerializeField] private UnityInputPlayerInputSource input;
 
         private void Update()
         {
-            if (_input != null && _input.RestartPressed)
+            if (input != null && input.RestartPressed)
             {
                 scoreSystem?.Restart();
             }
