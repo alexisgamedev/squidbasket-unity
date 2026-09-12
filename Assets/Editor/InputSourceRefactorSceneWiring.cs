@@ -30,13 +30,11 @@ namespace Squidbasket.EditorTools
 
             var inputSource = Object.FindFirstObjectByType<PlayerInputSource>();
             var playerStateController = Object.FindFirstObjectByType<PlayerStateController>();
-            var restartInputHandler = Object.FindFirstObjectByType<RestartInputHandler>();
 
-            if (inputSource == null || playerStateController == null || restartInputHandler == null)
+            if (inputSource == null || playerStateController == null)
             {
                 Debug.LogError($"{nameof(InputSourceRefactorSceneWiring)}: could not find " +
-                                $"{nameof(PlayerInputSource)}/{nameof(PlayerStateController)}/" +
-                                $"{nameof(RestartInputHandler)} in {ScenePath}. Aborting.");
+                                $"{nameof(PlayerInputSource)}/{nameof(PlayerStateController)}/");
                 return;
             }
 
@@ -51,10 +49,6 @@ namespace Squidbasket.EditorTools
             var playerStateSerialized = new SerializedObject(playerStateController);
             playerStateSerialized.FindProperty("input").objectReferenceValue = inputSource;
             playerStateSerialized.ApplyModifiedPropertiesWithoutUndo();
-
-            var restartSerialized = new SerializedObject(restartInputHandler);
-            restartSerialized.FindProperty("input").objectReferenceValue = inputSource;
-            restartSerialized.ApplyModifiedPropertiesWithoutUndo();
 
             EditorSceneManager.MarkSceneDirty(scene);
             EditorSceneManager.SaveScene(scene);

@@ -165,5 +165,16 @@ namespace Squidbasket.Gameplay
                 OnSettled();
             }
         }
+
+        private void OnDrawGizmosSelected()
+        {
+            if(hoop != null)
+            {
+                Gizmos.color = new Color(1,0,0,0.5f);
+                Vector3 pos = hoop.position;
+                pos.y = 0f;
+                Gizmos.DrawSphere(pos, threePointRadius);
+            }
+        }
     }
 }

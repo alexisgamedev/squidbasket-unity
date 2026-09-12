@@ -309,6 +309,7 @@ MonoBehaviour:
   shootAction: {fileID: -5542205008124981033, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   resetAction: {fileID: -4684019823974651922, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   restartAction: {fileID: -2681863693677866194, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+  jumpAction: {fileID: -2099379676528639254, guid: 052faaac586de48259a63d0c4782560b, type: 3}
 --- !u!114 &8397643904982016411
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -323,6 +324,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   moveSpeed: 5
   gravity: -9.81
+  jumpVelocity: 5
 --- !u!114 &8899301593375202345
 MonoBehaviour:
   m_ObjectHideFlags: 0

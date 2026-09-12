@@ -50,6 +50,8 @@ namespace Squidbasket.Player
                 Vector3 forward = Vector3.ProjectOnPlane(facingForward, Vector3.up).normalized;
                 Vector3 right = Vector3.Cross(Vector3.up, forward);
                 _horizontalVelocity = (forward * moveInput.y + right * moveInput.x) * moveSpeed;
+
+                transform.localRotation = Quaternion.LookRotation(forward, Vector3.up);
             }
 
             ApplyMotion(deltaTime);

@@ -61,13 +61,6 @@ namespace Squidbasket.EditorTools
             hudSerialized.FindProperty("streakText").objectReferenceValue = streakText;
             hudSerialized.ApplyModifiedPropertiesWithoutUndo();
 
-            var restartHandlerGo = new GameObject("Restart Input Handler");
-            var restartHandler = restartHandlerGo.AddComponent<RestartInputHandler>();
-            var restartSerialized = new SerializedObject(restartHandler);
-            restartSerialized.FindProperty("scoreSystem").objectReferenceValue = scoreSystem;
-            restartSerialized.FindProperty("input").objectReferenceValue = inputSource;
-            restartSerialized.ApplyModifiedPropertiesWithoutUndo();
-
             EditorSceneManager.MarkSceneDirty(scene);
             EditorSceneManager.SaveScene(scene);
             Debug.Log($"{nameof(HudSceneSetup)}: HUD, Restart button, and Restart key handler wired into {ScenePath}.");
