@@ -1,6 +1,8 @@
 using Squidbasket.Scoring;
+using Squidbasket.Player;
 using UnityEngine;
 using UnityEngine.UI;
+using Squidbasket.Gameplay;
 
 namespace Squidbasket.UI
 {
@@ -12,8 +14,13 @@ namespace Squidbasket.UI
     public sealed class ScoreHud : MonoBehaviour
     {
         [SerializeField] private ScoreSystem scoreSystem;
+        [SerializeField] private PlayerStateController playerStateController;
+        [SerializeField] private Ball ball;
+
         [SerializeField] private Text scoreText;
         [SerializeField] private Text streakText;
+        [SerializeField] private Text playerStateText;
+        [SerializeField] private Text ballStateText;
 
         private int _lastScore = -1;
         private int _lastStreak = -1;
@@ -41,6 +48,16 @@ namespace Squidbasket.UI
                 {
                     streakText.text = $"Streak: {_lastStreak}";
                 }
+            }
+
+            if (playerStateController != null)
+            {
+                playerStateText.text = $"Player State: {(playerStateController.IsShooting ? "Shooting" : "Walking")}";
+            }
+
+            if (ball != null)
+            {
+                ballStateText.text = $"Ball Held: {ball.IsHeldByPlayer}";
             }
         }
     }
