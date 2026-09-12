@@ -27,9 +27,8 @@ namespace Squidbasket.Camera
         }
 
         // lookInput is a per-frame mouse delta (or already-scaled stick input), not a rate, so it
-        // is applied directly with no deltaTime multiply. Whether Bullet Time should additionally
-        // damp aim sensitivity during Shooting is an open, unresolved question (ADR-0002) — not
-        // implemented here.
+        // is applied directly with no deltaTime multiply. This camera is Walking-only — Bullet
+        // Time never applies here, so unlike FirstPersonCamera it has no sensitivity multiplier.
         public CameraPose GetDesiredPose(Transform pivot, Vector2 lookInput)
         {
             _yaw += lookInput.x * sensitivity;

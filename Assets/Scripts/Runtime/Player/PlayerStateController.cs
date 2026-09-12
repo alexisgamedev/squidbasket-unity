@@ -54,6 +54,14 @@ namespace Squidbasket.Player
             _movement = GetComponent<PlayerMovement>();
             _fsm = new PlayerFsm();
 
+            if (_input == null)
+            {
+                Debug.LogError(
+                    $"{nameof(PlayerStateController)} has no {nameof(inputSourceBehaviour)} assigned, or it " +
+                    $"doesn't implement {nameof(IPlayerInputSource)} — the player will not respond to input.",
+                    this);
+            }
+
             if (ballHand != null && ballHand.HandAnchor == null)
             {
                 Debug.LogWarning(
@@ -90,6 +98,11 @@ namespace Squidbasket.Player
 
         private void Update()
         {
+            if (_input == null)
+            {
+                return;
+            }
+
             float deltaTime = Time.deltaTime;
 
             if (_fsm.Current == PlayerLifecycleState.Walking)
@@ -133,13 +146,16 @@ namespace Squidbasket.Player
 
             if (_fsm.TryExitShooting(shootReleased, timedOut))
             {
-                if (timedOut)
+                // A same-frame release and timeout favors the release (ADR-0002: Shot Timeout is
+                // the cost of holding through 2.5 loops *without* releasing, not a way to steal
+                // an intentionally-released shot away from the player).
+                if (shootReleased)
                 {
-                    ball?.Drop();
+                    FireShot();
                 }
                 else
                 {
-                    FireShot();
+                    ball?.Drop();
                 }
 
                 thirdPersonCamera.SetOrientation(firstPersonCamera.Yaw, firstPersonCamera.Pitch);

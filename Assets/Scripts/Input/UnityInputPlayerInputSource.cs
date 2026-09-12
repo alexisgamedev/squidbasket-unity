@@ -16,16 +16,19 @@ namespace Squidbasket.Input
         [SerializeField] private string lookActionName = "Look";
         [SerializeField] private string shootActionName = "Shoot";
         [SerializeField] private string resetActionName = "Reset";
+        [SerializeField] private string restartActionName = "Restart";
 
         private InputAction _moveAction;
         private InputAction _lookAction;
         private InputAction _shootAction;
         private InputAction _resetAction;
+        private InputAction _restartAction;
 
         public Vector2 MoveInput => _moveAction != null ? _moveAction.ReadValue<Vector2>() : Vector2.zero;
         public Vector2 LookInput => _lookAction != null ? _lookAction.ReadValue<Vector2>() : Vector2.zero;
         public bool ShootHeld => _shootAction != null && _shootAction.IsPressed();
         public bool ResetPressed => _resetAction != null && _resetAction.WasPressedThisFrame();
+        public bool RestartPressed => _restartAction != null && _restartAction.WasPressedThisFrame();
 
         private void Awake()
         {
@@ -40,6 +43,7 @@ namespace Squidbasket.Input
             _lookAction = map.FindAction(lookActionName, throwIfNotFound: true);
             _shootAction = map.FindAction(shootActionName, throwIfNotFound: true);
             _resetAction = map.FindAction(resetActionName, throwIfNotFound: true);
+            _restartAction = map.FindAction(restartActionName, throwIfNotFound: true);
         }
 
         private void OnEnable()
@@ -48,6 +52,7 @@ namespace Squidbasket.Input
             _lookAction?.Enable();
             _shootAction?.Enable();
             _resetAction?.Enable();
+            _restartAction?.Enable();
         }
 
         private void OnDisable()
@@ -56,6 +61,7 @@ namespace Squidbasket.Input
             _lookAction?.Disable();
             _shootAction?.Disable();
             _resetAction?.Disable();
+            _restartAction?.Disable();
         }
     }
 }

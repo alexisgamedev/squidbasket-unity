@@ -14,5 +14,8 @@ namespace Squidbasket.Player
 
         /// <summary>True for exactly the frame Reset was pressed.</summary>
         bool ResetPressed { get; }
+
+        /// <summary>True for exactly the frame Restart was pressed.</summary>
+        bool RestartPressed { get; }
     }
 }
