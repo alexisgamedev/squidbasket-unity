@@ -20,6 +20,12 @@ namespace Squidbasket.Player
         [SerializeField] private Transform cameraPivot;
         [SerializeField] private Ball ball;
         [SerializeField] private PlayerBallHand ballHand;
+
+        // Deliberately a separate anchor from ballHand.HandAnchor: the ball needs to reposition
+        // to a different hand pose when Shooting's first-person aiming takes over, so ShootingState
+        // gets its own anchor rather than sharing the one Walking/Retrieval/Reset use.
+        [SerializeField] private Transform shootingHandAnchor;
+
         [SerializeField] private Transform freeThrowLineAnchor;
         [SerializeField] private MonoBehaviour inputSourceBehaviour;
 
@@ -62,19 +68,28 @@ namespace Squidbasket.Player
                     this);
             }
 
-            if (ballHand != null && ballHand.HandAnchor == null)
+            if (ballHand != null)
             {
-                Debug.LogWarning(
-                    $"{nameof(PlayerBallHand)} on {ballHand.name} has no handAnchor assigned — " +
-                    "the ball will attach with no anchor to track and freeze wherever it was released.",
-                    ballHand);
+                WarnIfAnchorMissing(ballHand.HandAnchor, nameof(ballHand.HandAnchor), "Walking/Retrieval/Reset");
             }
+
+            WarnIfAnchorMissing(shootingHandAnchor, nameof(shootingHandAnchor), "Shooting");
 
             var powerBar = new PowerBarOscillator(powerBarMin, powerBarMax, powerBarSpeed);
             _walking = new WalkingState(_movement, _input, sharedCamera.transform);
-            _shooting = new ShootingState(
-                _movement, powerBar, bulletTimeScale, ball, ballHand != null ? ballHand.HandAnchor : null);
+            _shooting = new ShootingState(_movement, powerBar, bulletTimeScale, ball, shootingHandAnchor);
             _current = _walking;
+        }
+
+        private void WarnIfAnchorMissing(Transform anchor, string fieldName, string usedDuring)
+        {
+            if (anchor == null)
+            {
+                Debug.LogWarning(
+                    $"{nameof(PlayerStateController)}'s {fieldName} is unassigned — the ball will attach with " +
+                    $"no anchor to track and freeze wherever it was released during {usedDuring}.",
+                    this);
+            }
         }
 
         private void OnEnable()

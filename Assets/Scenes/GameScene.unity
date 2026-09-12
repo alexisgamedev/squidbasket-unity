@@ -1486,6 +1486,7 @@ MonoBehaviour:
   cameraPivot: {fileID: 1136712514}
   ball: {fileID: 9015542419697874459}
   ballHand: {fileID: 59235694}
+  shootingHandAnchor: {fileID: 566379202}
   freeThrowLineAnchor: {fileID: 1366719802}
   inputSourceBehaviour: {fileID: 1223536989}
   powerBarMin: 0
