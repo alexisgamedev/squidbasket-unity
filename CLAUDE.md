@@ -86,3 +86,13 @@ No custom `MonoBehaviour`/gameplay scripts exist yet outside the Editor bootstra
 next work is the actual game (court/hoop layout, ball rigidbody + shot mechanic, aim/power
 input, scoring/UI), which will introduce the real architecture (likely a `Assets/Scripts/`
 runtime folder, not yet created).
+
+## Agent skills
+
+### Issue tracker
+
+Issues live in this repo's GitHub Issues (`alexisgamedev/squidbasket-unity`); skills use the `gh` CLI. See `docs/agents/issue-tracker.md`.
+
+### Domain docs
+
+Single-context: `CONTEXT.md` + `docs/adr/` at the repo root. See `docs/agents/domain.md`.
