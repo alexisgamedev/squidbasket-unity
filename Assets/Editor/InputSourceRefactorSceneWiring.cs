@@ -11,7 +11,7 @@ namespace Squidbasket.EditorTools
 {
     /// <summary>
     /// One-off headless re-wiring for the IPlayerInputSource removal: points
-    /// <see cref="UnityInputPlayerInputSource"/>'s new <see cref="InputActionReference"/> fields
+    /// <see cref="PlayerInputSource"/>'s new <see cref="InputActionReference"/> fields
     /// at the Player action map, and re-assigns the renamed `input` field on
     /// <see cref="PlayerStateController"/>/<see cref="RestartInputHandler"/> now that the old
     /// `inputSourceBehaviour` field name/type is gone. Invoke via: `unity run . --editor-version
@@ -28,14 +28,14 @@ namespace Squidbasket.EditorTools
         {
             Scene scene = EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
 
-            var inputSource = Object.FindFirstObjectByType<UnityInputPlayerInputSource>();
+            var inputSource = Object.FindFirstObjectByType<PlayerInputSource>();
             var playerStateController = Object.FindFirstObjectByType<PlayerStateController>();
             var restartInputHandler = Object.FindFirstObjectByType<RestartInputHandler>();
 
             if (inputSource == null || playerStateController == null || restartInputHandler == null)
             {
                 Debug.LogError($"{nameof(InputSourceRefactorSceneWiring)}: could not find " +
-                                $"{nameof(UnityInputPlayerInputSource)}/{nameof(PlayerStateController)}/" +
+                                $"{nameof(PlayerInputSource)}/{nameof(PlayerStateController)}/" +
                                 $"{nameof(RestartInputHandler)} in {ScenePath}. Aborting.");
                 return;
             }
@@ -59,7 +59,7 @@ namespace Squidbasket.EditorTools
             EditorSceneManager.MarkSceneDirty(scene);
             EditorSceneManager.SaveScene(scene);
             Debug.Log($"{nameof(InputSourceRefactorSceneWiring)}: re-wired {ScenePath} for the direct " +
-                      $"{nameof(UnityInputPlayerInputSource)} references.");
+                      $"{nameof(PlayerInputSource)} references.");
         }
 
         private static void AssignActionReference(SerializedObject target, string fieldName, string actionName)

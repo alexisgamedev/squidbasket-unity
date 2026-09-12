@@ -7,7 +7,7 @@ namespace Squidbasket.Input
     /// Reads player input via Unity's Input System, exposing it as plain properties for gameplay
     /// code to consume directly (ADR-0003).
     /// </summary>
-    public sealed class UnityInputPlayerInputSource : MonoBehaviour
+    public sealed class PlayerInputSource : MonoBehaviour
     {
         [SerializeField] private InputActionReference moveAction;
         [SerializeField] private InputActionReference lookAction;
@@ -44,12 +44,12 @@ namespace Squidbasket.Input
         {
             if (reference == null)
             {
-                Debug.LogError($"{nameof(UnityInputPlayerInputSource)} has no {fieldName} assigned.", this);
+                Debug.LogError($"{nameof(PlayerInputSource)} has no {fieldName} assigned.", this);
             }
             else if (reference.action == null)
             {
                 Debug.LogError(
-                    $"{nameof(UnityInputPlayerInputSource)}'s {fieldName} references an action that no longer " +
+                    $"{nameof(PlayerInputSource)}'s {fieldName} references an action that no longer " +
                     "exists in its InputActionAsset.", this);
             }
         }

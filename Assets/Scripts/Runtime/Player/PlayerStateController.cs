@@ -28,7 +28,7 @@ namespace Squidbasket.Player
         [SerializeField] private Transform shootingHandAnchor;
 
         [SerializeField] private Transform freeThrowLineAnchor;
-        [SerializeField] private UnityInputPlayerInputSource input;
+        [SerializeField] private PlayerInputSource input;
 
         [Header("Shooting")]
         [SerializeField] private float powerBarMin;

@@ -84,8 +84,6 @@ namespace Squidbasket.Gameplay
             _state = BallState.Held;
             _hasScoredThisShot = false;
             _restTimer = 0f;
-            RigidbodyComponent.linearVelocity = Vector3.zero;
-            RigidbodyComponent.angularVelocity = Vector3.zero;
             RigidbodyComponent.isKinematic = true;
         }
 

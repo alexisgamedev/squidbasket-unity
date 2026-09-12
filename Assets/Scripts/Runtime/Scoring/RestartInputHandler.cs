@@ -13,7 +13,7 @@ namespace Squidbasket.Scoring
     public sealed class RestartInputHandler : MonoBehaviour
     {
         [SerializeField] private ScoreSystem scoreSystem;
-        [SerializeField] private UnityInputPlayerInputSource input;
+        [SerializeField] private PlayerInputSource input;
 
         private void Update()
         {

@@ -9,10 +9,10 @@ namespace Squidbasket.Player
     public sealed class WalkingState : IPlayerState
     {
         private readonly PlayerMovement _movement;
-        private readonly UnityInputPlayerInputSource _input;
+        private readonly PlayerInputSource _input;
         private readonly Transform _cameraTransform;
 
-        public WalkingState(PlayerMovement movement, UnityInputPlayerInputSource input, Transform cameraTransform)
+        public WalkingState(PlayerMovement movement, PlayerInputSource input, Transform cameraTransform)
         {
             _movement = movement;
             _input = input;

@@ -35,12 +35,12 @@ namespace Squidbasket.EditorTools
             }
 
             var scoreSystem = Object.FindFirstObjectByType<ScoreSystem>();
-            var inputSource = Object.FindFirstObjectByType<UnityInputPlayerInputSource>();
+            var inputSource = Object.FindFirstObjectByType<PlayerInputSource>();
 
             if (scoreSystem == null || inputSource == null)
             {
                 Debug.LogError($"{nameof(HudSceneSetup)}: could not find a {nameof(ScoreSystem)} and/or " +
-                                $"{nameof(UnityInputPlayerInputSource)} in {ScenePath}. Aborting.");
+                                $"{nameof(PlayerInputSource)} in {ScenePath}. Aborting.");
                 return;
             }
 
