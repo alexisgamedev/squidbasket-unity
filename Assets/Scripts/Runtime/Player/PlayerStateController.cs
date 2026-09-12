@@ -41,9 +41,12 @@ namespace Squidbasket.Player
 
         public bool IsShooting => _fsm.Current == PlayerLifecycleState.Shooting;
 
-        public float PowerBarNormalizedValue => IsShooting
-            ? Mathf.InverseLerp(powerBarMin, powerBarMax, _shooting.PowerBar.CurrentValue)
-            : 0f;
+        // Deliberately not gated on IsShooting: FireShot() reads this at the exact moment the
+        // FSM has already flipped back to Walking, so gating here would always read 0 right when
+        // it matters most. Callers that need "is the bar currently visible" should check
+        // IsShooting themselves alongside this value.
+        public float PowerBarNormalizedValue =>
+            Mathf.InverseLerp(powerBarMin, powerBarMax, _shooting.PowerBar.CurrentValue);
 
         private void Awake()
         {
@@ -51,14 +54,37 @@ namespace Squidbasket.Player
             _movement = GetComponent<PlayerMovement>();
             _fsm = new PlayerFsm();
 
+            if (ballHand != null && ballHand.HandAnchor == null)
+            {
+                Debug.LogWarning(
+                    $"{nameof(PlayerBallHand)} on {ballHand.name} has no handAnchor assigned — " +
+                    "the ball will attach with no anchor to track and freeze wherever it was released.",
+                    ballHand);
+            }
+
             var powerBar = new PowerBarOscillator(powerBarMin, powerBarMax, powerBarSpeed);
             _walking = new WalkingState(_movement, _input, sharedCamera.transform);
-            _shooting = new ShootingState(_movement, powerBar, bulletTimeScale);
+            _shooting = new ShootingState(
+                _movement, powerBar, bulletTimeScale, ball, ballHand != null ? ballHand.HandAnchor : null);
             _current = _walking;
         }
 
         private void OnEnable()
         {
+            // The player starts a Session already holding the ball (CONTEXT.md), same as after
+            // a Reset — establish that explicitly rather than assuming the ball's initial scene
+            // state (Rigidbody kinematic flag) already matches.
+            if (ball != null && ballHand != null)
+            {
+                ball.AttachTo(ballHand.HandAnchor);
+            }
+            else
+            {
+                Debug.LogWarning(
+                    $"{nameof(PlayerStateController)} is missing its {nameof(ball)}/{nameof(ballHand)} " +
+                    "reference — the player will never be able to enter Shooting.", this);
+            }
+
             _current.Enter();
         }
 
@@ -152,8 +178,8 @@ namespace Squidbasket.Player
         private void UpdateCamera(float deltaTime)
         {
             CameraPose desired = IsShooting
-                ? firstPersonCamera.GetDesiredPose(cameraPivot, _input.LookInput, deltaTime)
-                : thirdPersonCamera.GetDesiredPose(cameraPivot, _input.LookInput, deltaTime);
+                ? firstPersonCamera.GetDesiredPose(cameraPivot, _input.LookInput)
+                : thirdPersonCamera.GetDesiredPose(cameraPivot, _input.LookInput);
 
             Transform cam = sharedCamera.transform;
             float t = 1f - Mathf.Exp(-cameraBlendSpeed * deltaTime);

@@ -9,10 +9,25 @@ namespace Squidbasket.Gameplay
     /// a Shot at the moment of release, so ScoreSystem never has to reach into another system's
     /// data (ADR-0003). HoopTrigger reports a pass-through to this ball; this ball itself detects
     /// a Miss when it settles without having been reported as a make.
+    ///
+    /// Starts un-held: whoever first hands the player the ball (PlayerStateController at
+    /// startup, or Reset) must call <see cref="AttachTo"/> explicitly, so the Rigidbody's
+    /// kinematic state and <see cref="IsHeldByPlayer"/> can never drift out of sync.
     /// </summary>
     [RequireComponent(typeof(Rigidbody))]
     public sealed class Ball : MonoBehaviour
     {
+        // Held / InFlight / Loose as one enum (rather than independent bools) makes "can this be
+        // picked up right now" unambiguous: only Loose allows Retrieval, so a shot that's still
+        // resolving (InFlight, e.g. rebounding off the rim back toward the player) can no longer
+        // be silently re-attached to the hand before its make/miss outcome is ever raised.
+        private enum BallState
+        {
+            Held,
+            InFlight,
+            Loose
+        }
+
         [SerializeField] private Transform hoop;
         [SerializeField] private float threePointRadius = 6.75f;
         [SerializeField] private float restSpeedThreshold = 0.05f;
@@ -20,23 +35,22 @@ namespace Squidbasket.Gameplay
 
         private Rigidbody _rigidbody;
         private Transform _heldAnchor;
-        private bool _isHeldByPlayer = true;
-        private bool _isShotPending;
+        private BallState _state = BallState.Loose;
         private bool _hasScoredThisShot;
         private Zone _releaseZone;
         private int _releasePoints;
         private float _restTimer;
 
-        public bool IsHeldByPlayer => _isHeldByPlayer;
+        public bool IsHeldByPlayer => _state == BallState.Held;
 
-        private void Awake()
-        {
-            _rigidbody = GetComponent<Rigidbody>();
-        }
+        // Fetched lazily rather than cached in Awake(): AttachTo can legitimately run before
+        // Awake has (e.g. PlayerStateController.OnEnable calling it on a sibling component), and
+        // RequireComponent already guarantees a Rigidbody exists on this GameObject regardless.
+        private Rigidbody RigidbodyComponent => _rigidbody != null ? _rigidbody : (_rigidbody = GetComponent<Rigidbody>());
 
         private void LateUpdate()
         {
-            if (_isHeldByPlayer && _heldAnchor != null)
+            if (_state == BallState.Held && _heldAnchor != null)
             {
                 transform.SetPositionAndRotation(_heldAnchor.position, _heldAnchor.rotation);
             }
@@ -44,12 +58,12 @@ namespace Squidbasket.Gameplay
 
         private void FixedUpdate()
         {
-            if (_isHeldByPlayer)
+            if (_state == BallState.Held)
             {
                 return;
             }
 
-            if (_rigidbody.linearVelocity.magnitude <= restSpeedThreshold)
+            if (RigidbodyComponent.linearVelocity.magnitude <= restSpeedThreshold)
             {
                 _restTimer += Time.fixedDeltaTime;
                 if (_restTimer >= restCheckDelay)
@@ -67,13 +81,12 @@ namespace Squidbasket.Gameplay
         public void AttachTo(Transform anchor)
         {
             _heldAnchor = anchor;
-            _isHeldByPlayer = true;
-            _isShotPending = false;
+            _state = BallState.Held;
             _hasScoredThisShot = false;
             _restTimer = 0f;
-            _rigidbody.linearVelocity = Vector3.zero;
-            _rigidbody.angularVelocity = Vector3.zero;
-            _rigidbody.isKinematic = true;
+            RigidbodyComponent.linearVelocity = Vector3.zero;
+            RigidbodyComponent.angularVelocity = Vector3.zero;
+            RigidbodyComponent.isKinematic = true;
         }
 
         /// <summary>Releases the ball as a Shot with the given launch velocity (LMB released).</summary>
@@ -81,20 +94,20 @@ namespace Squidbasket.Gameplay
         {
             RecordReleaseZone();
             ReleasePhysics(velocity);
-            _isShotPending = true;
+            _state = BallState.InFlight;
         }
 
         /// <summary>Releases the ball with no launch velocity after a Shot Timeout — the ball is lost.</summary>
         public void Drop()
         {
             ReleasePhysics(Vector3.zero);
-            _isShotPending = false;
+            _state = BallState.Loose;
         }
 
         /// <summary>Called by HoopTrigger when this ball passes through the hoop.</summary>
         public void NotifyPassedThroughHoop()
         {
-            if (!_isShotPending || _hasScoredThisShot)
+            if (_state != BallState.InFlight || _hasScoredThisShot)
             {
                 return;
             }
@@ -112,35 +125,37 @@ namespace Squidbasket.Gameplay
 
         private void ReleasePhysics(Vector3 velocity)
         {
-            _isHeldByPlayer = false;
             _heldAnchor = null;
             _restTimer = 0f;
-            _rigidbody.isKinematic = false;
-            _rigidbody.linearVelocity = velocity;
+            RigidbodyComponent.isKinematic = false;
+            RigidbodyComponent.linearVelocity = velocity;
         }
 
         private void OnSettled()
         {
-            if (_isShotPending && !_hasScoredThisShot)
+            if (_state == BallState.InFlight && !_hasScoredThisShot)
             {
                 GameEvents.RaiseShotMissed();
             }
 
-            _isShotPending = false;
+            _state = BallState.Loose;
         }
 
-        private void OnTriggerEnter(Collider other)
+        /// <summary>Retrieval attempt from a hand overlap; a no-op unless the ball is Loose (not
+        /// held, and not still resolving a Shot in flight).</summary>
+        public void TryRetrieve(PlayerBallHand hand)
         {
-            if (_isHeldByPlayer)
+            if (_state != BallState.Loose || hand == null)
             {
                 return;
             }
 
-            var hand = other.GetComponentInParent<PlayerBallHand>();
-            if (hand != null)
-            {
-                AttachTo(hand.HandAnchor);
-            }
+            AttachTo(hand.HandAnchor);
+        }
+
+        private void OnTriggerEnter(Collider other)
+        {
+            TryRetrieve(other.GetComponentInParent<PlayerBallHand>());
         }
     }
 }

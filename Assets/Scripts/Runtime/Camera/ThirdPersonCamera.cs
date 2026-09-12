@@ -26,7 +26,11 @@ namespace Squidbasket.Camera
             _pitch = Mathf.Clamp(pitch, minPitch, maxPitch);
         }
 
-        public CameraPose GetDesiredPose(Transform pivot, Vector2 lookInput, float deltaTime)
+        // lookInput is a per-frame mouse delta (or already-scaled stick input), not a rate, so it
+        // is applied directly with no deltaTime multiply. Whether Bullet Time should additionally
+        // damp aim sensitivity during Shooting is an open, unresolved question (ADR-0002) — not
+        // implemented here.
+        public CameraPose GetDesiredPose(Transform pivot, Vector2 lookInput)
         {
             _yaw += lookInput.x * sensitivity;
             _pitch = Mathf.Clamp(_pitch - lookInput.y * sensitivity, minPitch, maxPitch);
