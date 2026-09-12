@@ -35,7 +35,8 @@ namespace Squidbasket.Gameplay
 
         private Rigidbody _rigidbody;
         private Transform _heldAnchor;
-        private BallState _state = BallState.Loose;
+
+        [SerializeField] private BallState _state = BallState.Loose;
         private bool _hasScoredThisShot;
         private Zone _releaseZone;
         private int _releasePoints;
@@ -85,6 +86,7 @@ namespace Squidbasket.Gameplay
             _hasScoredThisShot = false;
             _restTimer = 0f;
             RigidbodyComponent.isKinematic = true;
+            Debug.Log($"Ball attached to {anchor?.name ?? "null"}");
         }
 
         /// <summary>Releases the ball as a Shot with the given launch velocity (LMB released).</summary>
@@ -154,6 +156,14 @@ namespace Squidbasket.Gameplay
         private void OnTriggerEnter(Collider other)
         {
             TryRetrieve(other.GetComponentInParent<PlayerBallHand>());
+        }
+
+        private void OnCollisionEnter(Collision collision)
+        {
+            if((LayerMask.NameToLayer("Ground") & collision.gameObject.layer) != 0)
+            {
+                OnSettled();
+            }
         }
     }
 }
