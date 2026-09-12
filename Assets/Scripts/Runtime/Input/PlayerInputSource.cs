@@ -14,6 +14,7 @@ namespace Squidbasket.Input
         [SerializeField] private InputActionReference shootAction;
         [SerializeField] private InputActionReference resetAction;
         [SerializeField] private InputActionReference restartAction;
+        [SerializeField] private InputActionReference jumpAction;
 
         private InputActionReference[] _actions;
 
@@ -29,10 +30,17 @@ namespace Squidbasket.Input
         /// <summary>True for exactly the frame Restart was pressed.</summary>
         public bool RestartPressed => restartAction != null && restartAction.action != null && restartAction.action.WasPressedThisFrame();
 
+        /// <summary>True for exactly the frame Jump was pressed.</summary>
+        public bool JumpPressed => jumpAction != null && jumpAction.action != null && jumpAction.action.WasPressedThisFrame();
+
         private void Awake()
         {
-            _actions = new[] { moveAction, lookAction, shootAction, resetAction, restartAction };
-            string[] fieldNames = { nameof(moveAction), nameof(lookAction), nameof(shootAction), nameof(resetAction), nameof(restartAction) };
+            _actions = new[] { moveAction, lookAction, shootAction, resetAction, restartAction, jumpAction };
+            string[] fieldNames =
+            {
+                nameof(moveAction), nameof(lookAction), nameof(shootAction), nameof(resetAction),
+                nameof(restartAction), nameof(jumpAction)
+            };
 
             for (int i = 0; i < _actions.Length; i++)
             {

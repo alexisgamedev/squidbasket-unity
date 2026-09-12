@@ -25,7 +25,7 @@ namespace Squidbasket.Player
 
         public void Tick(float deltaTime)
         {
-            _movement.TickWithInput(_input.MoveInput, _cameraTransform.forward, deltaTime);
+            _movement.TickWithInput(_input.MoveInput, _cameraTransform.forward, deltaTime, _input.JumpPressed);
         }
 
         public void Exit()

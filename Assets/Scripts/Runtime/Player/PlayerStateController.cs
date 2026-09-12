@@ -199,6 +199,8 @@ namespace Squidbasket.Player
                 transform.SetPositionAndRotation(freeThrowLineAnchor.position, freeThrowLineAnchor.rotation);
             }
 
+            _movement.ResetVerticalState();
+
             if (ball != null && ballHand != null)
             {
                 ball.AttachTo(ballHand.HandAnchor);

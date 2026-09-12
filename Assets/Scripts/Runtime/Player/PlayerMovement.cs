@@ -13,10 +13,12 @@ namespace Squidbasket.Player
     {
         [SerializeField] private float moveSpeed = 5f;
         [SerializeField] private float gravity = -9.81f;
+        [SerializeField] private float jumpVelocity = 5f;
 
         private CharacterController _controller;
         private Vector3 _horizontalVelocity;
         private float _verticalVelocity;
+        private bool _isAirborne;
 
         public Vector3 HorizontalVelocity => _horizontalVelocity;
 
@@ -25,12 +27,30 @@ namespace Squidbasket.Player
             _controller = GetComponent<CharacterController>();
         }
 
-        /// <summary>WASD movement relative to the given facing direction (Walking).</summary>
-        public void TickWithInput(Vector2 moveInput, Vector3 facingForward, float deltaTime)
+        /// <summary>
+        /// WASD movement relative to the given facing direction (Walking). While grounded, a true
+        /// <paramref name="jumpPressed"/> launches the player upward and freezes horizontal
+        /// velocity at its current value until landing — no air control, no double-jump.
+        /// </summary>
+        public void TickWithInput(Vector2 moveInput, Vector3 facingForward, float deltaTime, bool jumpPressed)
         {
-            Vector3 forward = Vector3.ProjectOnPlane(facingForward, Vector3.up).normalized;
-            Vector3 right = Vector3.Cross(Vector3.up, forward);
-            _horizontalVelocity = (forward * moveInput.y + right * moveInput.x) * moveSpeed;
+            if (_controller.isGrounded)
+            {
+                _isAirborne = false;
+
+                if (jumpPressed)
+                {
+                    _verticalVelocity = jumpVelocity;
+                    _isAirborne = true;
+                }
+            }
+
+            if (!_isAirborne)
+            {
+                Vector3 forward = Vector3.ProjectOnPlane(facingForward, Vector3.up).normalized;
+                Vector3 right = Vector3.Cross(Vector3.up, forward);
+                _horizontalVelocity = (forward * moveInput.y + right * moveInput.x) * moveSpeed;
+            }
 
             ApplyMotion(deltaTime);
         }
@@ -39,6 +59,17 @@ namespace Squidbasket.Player
         public void TickMomentumOnly(float deltaTime)
         {
             ApplyMotion(deltaTime);
+        }
+
+        /// <summary>
+        /// Clears vertical velocity and any in-progress jump freeze. Used by Reset/Respawn so a
+        /// mid-jump Reset doesn't leave the player still rising/falling or with horizontal input
+        /// frozen after being teleported.
+        /// </summary>
+        public void ResetVerticalState()
+        {
+            _verticalVelocity = 0f;
+            _isAirborne = false;
         }
 
         private void ApplyMotion(float deltaTime)

@@ -41,11 +41,15 @@ Persistent advancement carried between Sessions (e.g. unlocks, difficulty tiers)
 
 ## Player state
 
-The player is always in exactly one of two states, which govern camera perspective and available actions.
+The player is always in exactly one of two states, which govern camera perspective and available actions. Jump (see below) is an action available within Walking, not a third state.
 
 **Walking**:
-The default state. Third-person camera; WASD moves the player, mouse look orbits the camera; the player carries/dribbles the ball. Entered whenever Shooting ends, whether by a released Shot or a Shot Timeout.
+The default state. Third-person camera; WASD moves the player, mouse look orbits the camera; the player carries/dribbles the ball. Entered whenever Shooting ends, whether by a released Shot or a Shot Timeout. Jumping is available in this state.
 _Avoid_: Movement state, default state
+
+**Jump**:
+A vertical hop the player triggers only while Walking. Horizontal momentum freezes at whatever it was the instant the Jump started, and only unfreezes on landing — there is no air control. Requires being grounded, so it cannot be re-triggered mid-air.
+_Avoid_: Double jump, air control (neither exists)
 
 **Shooting**:
 Entered from Walking by holding LMB; the camera blends (briefly) to first-person, Bullet Time engages, and the Power Bar appears. The player cannot move with WASD, but keeps whatever momentum they had on entry without it decaying — like everything but the Power Bar, its real-world drift is slowed by Bullet Time. Shot direction combines the camera's forward direction with an Up vector (scaled by Power) to produce a realistic throwing arc. Releasing LMB fires a Shot using the Power Bar's current value and returns to Walking; a Shot Timeout does the same without firing a Shot, and the ball is lost.

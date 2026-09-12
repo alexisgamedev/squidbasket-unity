@@ -1,0 +1,5 @@
+# Jump is an action within Walking, not a third player state
+
+ADR-0003 established a state-object FSM (`PlayerStateController` owning `WalkingState`/`ShootingState`) specifically because each `PlayerLifecycleState` carries meaningfully different per-frame behavior and enter/exit side effects — camera switch, Bullet Time, momentum handling. Jump could have been added as a third state (`Airborne`/`Jumping`) on that same precedent, but we rejected it: Jump doesn't change camera perspective, input mode, or ball attachment — the things `PlayerLifecycleState` actually governs — it's purely a vertical-motion concern owned by `PlayerMovement`.
+
+Instead, Jump lives entirely inside `WalkingState`'s per-frame tick, which already only runs while `PlayerFsm.Current == Walking`. This gets "Jump is Walking-only" for free, with no explicit state check, and keeps CONTEXT.md's "always in exactly one of two states" invariant true. A future reader seeing Jump-related code outside the FSM, despite the FSM pattern being the established norm for state-shaped behavior, should not "fix" this by promoting Jump to a state without revisiting this decision.
