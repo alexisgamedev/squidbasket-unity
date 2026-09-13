@@ -26,6 +26,7 @@ namespace Squidbasket.UI
 
         [SerializeField] private Button restartButton;
         [SerializeField] private Text sensitivityText;
+        [SerializeField] private Slider sensitivitySlider;
 
         [Space]
         [SerializeField] private ScoreSystem scoreSystem;
@@ -61,7 +62,8 @@ namespace Squidbasket.UI
                 SetOpen(false);
             });
 
-            SetCameraSensitivity(1.5f);
+            sensitivitySlider.onValueChanged.AddListener(SetCameraSensitivity);
+            SetCameraSensitivity(sensitivitySlider.value);
         }
 
         private void OnEnable() => toggleMenuAction?.action?.Enable();
@@ -103,7 +105,7 @@ namespace Squidbasket.UI
 #endif
         }
 
-        public void SetCameraSensitivity(float newValue)
+        private void SetCameraSensitivity(float newValue)
         {
             sensitivityText.text = $"Camera Sensitivity ({newValue.ToString("0.00")})";
         }

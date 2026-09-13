@@ -9,7 +9,7 @@ namespace Squidbasket.Camera
     public sealed class FirstPersonCamera : MonoBehaviour
     {
         [SerializeField] private float eyeHeight = 1.7f;
-        [SerializeField] private float sensitivity = 2f;
+        [SerializeField] private float sensitivity = 0.5f;
 
         // Bullet Time (ADR-0002) doesn't naturally damp aim: lookInput is a per-frame device
         // delta, not something multiplied by deltaTime, so it isn't affected by Time.timeScale
@@ -25,9 +25,6 @@ namespace Squidbasket.Camera
 
         public float Yaw => _yaw;
         public float Pitch => _pitch;
-
-        /// <summary>Current mouse-look sensitivity, exposed for the pause menu's slider (CLAUDE.md).</summary>
-        public float Sensitivity => sensitivity;
 
         public void SetSensitivity(float value) => sensitivity = value;
 
