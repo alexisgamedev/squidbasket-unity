@@ -12037,30 +12037,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 3133296421662516, guid: c593e5f08071b2e418dcd1ea6f19fdac, type: 3}
-      propertyPath: m_LocalScale.x
-      value: 0.4538388
-      objectReference: {fileID: 0}
-    - target: {fileID: 4102817698901356871, guid: c593e5f08071b2e418dcd1ea6f19fdac, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: -0.1
-      objectReference: {fileID: 0}
-    - target: {fileID: 4930275741379792434, guid: c593e5f08071b2e418dcd1ea6f19fdac, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 0.391
-      objectReference: {fileID: 0}
-    - target: {fileID: 4930275741379792434, guid: c593e5f08071b2e418dcd1ea6f19fdac, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 0.209
-      objectReference: {fileID: 0}
-    - target: {fileID: 5618977785797615599, guid: c593e5f08071b2e418dcd1ea6f19fdac, type: 3}
-      propertyPath: m_LocalScale.x
-      value: 0.8
-      objectReference: {fileID: 0}
-    - target: {fileID: 5618977785797615599, guid: c593e5f08071b2e418dcd1ea6f19fdac, type: 3}
-      propertyPath: m_LocalScale.z
-      value: 0.8
-      objectReference: {fileID: 0}
     - target: {fileID: 6021927340900724450, guid: c593e5f08071b2e418dcd1ea6f19fdac, type: 3}
       propertyPath: m_Name
       value: Player
@@ -12105,10 +12081,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 7989605553000323691, guid: c593e5f08071b2e418dcd1ea6f19fdac, type: 3}
-      propertyPath: m_Radius
-      value: 0.4
-      objectReference: {fileID: 0}
     - target: {fileID: 8899301593375202345, guid: c593e5f08071b2e418dcd1ea6f19fdac, type: 3}
       propertyPath: ball
       value: 
@@ -12133,10 +12105,6 @@ PrefabInstance:
       propertyPath: trajectoryPreview
       value: 
       objectReference: {fileID: 1746016558}
-    - target: {fileID: 8899301593375202345, guid: c593e5f08071b2e418dcd1ea6f19fdac, type: 3}
-      propertyPath: freeThrowLineAnchor
-      value: 
-      objectReference: {fileID: 1366719802}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

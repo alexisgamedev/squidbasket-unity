@@ -25,7 +25,7 @@ Transform:
   m_GameObject: {fileID: 2134033778108799887}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.218, z: 0.746}
+  m_LocalPosition: {x: 0, y: -0.1, z: 0.746}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -56,7 +56,7 @@ Transform:
   m_GameObject: {fileID: 3219537847877606060}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.234, z: 0.3}
+  m_LocalPosition: {x: 0, y: 0.391, z: 0.209}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -93,7 +93,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: -0.1, z: 0}
-  m_LocalScale: {x: 1, y: 0.9, z: 1}
+  m_LocalScale: {x: 0.8, y: 0.9, z: 0.8}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 7776920261685155679}
@@ -286,7 +286,7 @@ CharacterController:
   m_Enabled: 1
   serializedVersion: 3
   m_Height: 1.8
-  m_Radius: 0.5
+  m_Radius: 0.4
   m_SlopeLimit: 45
   m_StepOffset: 0.3
   m_SkinWidth: 0.08
@@ -310,6 +310,7 @@ MonoBehaviour:
   resetAction: {fileID: -4684019823974651922, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   restartAction: {fileID: -2681863693677866194, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   jumpAction: {fileID: -2099379676528639254, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+  gamepadLookSpeed: 180
 --- !u!114 &8397643904982016411
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -504,7 +505,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0.126}
-  m_LocalScale: {x: 0.71934, y: 0.18245, z: 0.37516308}
+  m_LocalScale: {x: 0.4538388, y: 0.18245, z: 0.37516308}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 4930275741379792434}
