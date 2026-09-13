@@ -39,5 +39,16 @@ namespace Squidbasket.Tests
 
             Assert.AreEqual(Vector2.zero, result);
         }
+
+        [Test]
+        public void Scale_LargeDeltaTime_ClampsInsteadOfSnapping()
+        {
+            // A frame-time hitch (GC pause, load stall) must not turn a held-over stick deflection
+            // into a huge single-frame look delta.
+            var hitchResult = GamepadLookScaler.Scale(new Vector2(1f, 0f), lookSpeed: 180f, deltaTime: 2f);
+            var clampedResult = GamepadLookScaler.Scale(new Vector2(1f, 0f), lookSpeed: 180f, deltaTime: 1f / 15f);
+
+            Assert.AreEqual(clampedResult, hitchResult);
+        }
     }
 }

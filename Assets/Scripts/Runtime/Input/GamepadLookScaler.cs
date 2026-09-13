@@ -11,9 +11,15 @@ namespace Squidbasket.Input
     /// </summary>
     public static class GamepadLookScaler
     {
+        // Caps the deltaTime this scales by so a frame hitch (GC pause, load stall) can't turn a
+        // held-over stick deflection into a single huge, uncorrectable snap-turn — unlike mouse
+        // look's raw per-frame Pointer delta, this path multiplies by deltaTime and has no other
+        // clamp between here and the camera's yaw/pitch accumulation.
+        private const float MaxDeltaTime = 1f / 15f;
+
         public static Vector2 Scale(Vector2 rawStickInput, float lookSpeed, float deltaTime)
         {
-            return rawStickInput * lookSpeed * deltaTime;
+            return rawStickInput * lookSpeed * Mathf.Min(deltaTime, MaxDeltaTime);
         }
     }
 }
