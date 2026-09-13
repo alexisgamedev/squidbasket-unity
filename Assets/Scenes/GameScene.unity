@@ -12836,7 +12836,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 1
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 'Menu: Esc | Move: WASD | Shoot: LMB | Reset Ball: RMB'
+  m_Text: 'Menu: Esc | Move: WASD | Jump: Space | Shoot: LMB | Reset Ball: RMB'
 --- !u!222 &1839292490
 CanvasRenderer:
   m_ObjectHideFlags: 0
