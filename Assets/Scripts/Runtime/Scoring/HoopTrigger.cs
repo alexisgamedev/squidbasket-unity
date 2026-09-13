@@ -10,10 +10,16 @@ namespace Squidbasket.Scoring
     [RequireComponent(typeof(Collider))]
     public sealed class HoopTrigger : MonoBehaviour
     {
+        [SerializeField] ParticleSystem scoreParticles;
+
         private void OnTriggerEnter(Collider other)
         {
             var ball = other.GetComponentInParent<Ball>();
-            ball?.NotifyPassedThroughHoop();
+            if(ball != null && ball.NotifyPassedThroughHoop())
+            {
+                scoreParticles.Clear();
+                scoreParticles.Play();
+            }
         }
     }
 }
