@@ -86,7 +86,7 @@ namespace Squidbasket.Gameplay
             _hasScoredThisShot = false;
             _restTimer = 0f;
             RigidbodyComponent.isKinematic = true;
-            Debug.Log($"Ball attached to {anchor?.name ?? "null"}");
+            //Debug.Log($"Ball attached to {anchor?.name ?? "null"}");
         }
 
         /// <summary>Releases the ball as a Shot with the given launch velocity (LMB released).</summary>

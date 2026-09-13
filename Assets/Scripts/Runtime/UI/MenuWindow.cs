@@ -1,4 +1,5 @@
 using Squidbasket.Input;
+using Squidbasket.Scoring;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
@@ -22,7 +23,10 @@ namespace Squidbasket.UI
     public sealed class MenuWindow : MonoBehaviour
     {
         [SerializeField] private InputActionReference toggleMenuAction;
-        [SerializeField] private Selectable firstSelectable;
+
+        [SerializeField] private Button restartButton;
+
+        [SerializeField] private ScoreSystem scoreSystem;
         [SerializeField] private PlayerInputSource playerInput;
 
         private Canvas _canvas;
@@ -41,14 +45,6 @@ namespace Squidbasket.UI
                     this);
             }
 
-            if (firstSelectable == null)
-            {
-                Debug.LogWarning(
-                    $"{nameof(MenuWindow)} has no {nameof(firstSelectable)} assigned — nothing will be " +
-                    "selected when the menu opens.",
-                    this);
-            }
-
             if (playerInput == null)
             {
                 Debug.LogWarning(
@@ -56,6 +52,12 @@ namespace Squidbasket.UI
                     "keep running underneath the menu while it's open.",
                     this);
             }
+
+            restartButton.onClick.AddListener(() =>
+            {
+                scoreSystem.Restart();
+                SetOpen(false);
+            });
         }
 
         private void OnEnable() => toggleMenuAction?.action?.Enable();
@@ -82,9 +84,9 @@ namespace Squidbasket.UI
 
             playerInput?.SetInputEnabled(!open);
 
-            if (open && firstSelectable != null && EventSystem.current != null)
+            if (open && restartButton != null && EventSystem.current != null)
             {
-                EventSystem.current.SetSelectedGameObject(firstSelectable.gameObject);
+                restartButton.Select();
             }
         }
 
