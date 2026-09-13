@@ -16,12 +16,38 @@ namespace Squidbasket.Input
         [SerializeField] private InputActionReference restartAction;
         [SerializeField] private InputActionReference jumpAction;
 
+        // Mouse delta is already a per-frame pixel delta, but a stick-based device (gamepad or
+        // joystick) instead holds a constant-magnitude direction while tilted, so it needs this
+        // deltaTime-scaled rate to behave like a comparable per-frame delta rather than turning
+        // faster at higher framerates.
+        [SerializeField] private float gamepadLookSpeed = 180f;
+
         private InputActionReference[] _actions;
 
         public Vector2 MoveInput => moveAction != null && moveAction.action != null
             ? moveAction.action.ReadValue<Vector2>() : Vector2.zero;
-        public Vector2 LookInput => lookAction != null && lookAction.action != null
-            ? lookAction.action.ReadValue<Vector2>() : Vector2.zero;
+
+        public Vector2 LookInput
+        {
+            get
+            {
+                if (lookAction == null || lookAction.action == null)
+                {
+                    return Vector2.zero;
+                }
+
+                Vector2 raw = lookAction.action.ReadValue<Vector2>();
+                InputDevice device = lookAction.action.activeControl?.device;
+
+                // Unscaled: aim must not be damped by Bullet Time's Time.timeScale (see
+                // FirstPersonCamera's own note that lookInput is deliberately timescale-independent,
+                // and ShootingState's PowerBar for the same unscaledDeltaTime pattern).
+                return device is Gamepad || device is Joystick
+                    ? GamepadLookScaler.Scale(raw, gamepadLookSpeed, Time.unscaledDeltaTime)
+                    : raw;
+            }
+        }
+
         public bool ShootHeld => shootAction != null && shootAction.action != null && shootAction.action.IsPressed();
 
         /// <summary>True for exactly the frame Reset was pressed.</summary>
