@@ -27,7 +27,6 @@ namespace Squidbasket.Player
         // gets its own anchor rather than sharing the one Walking/Retrieval/Reset use.
         [SerializeField] private Transform shootingHandAnchor;
 
-        [SerializeField] private Transform freeThrowLineAnchor;
         [SerializeField] private PlayerInputSource input;
         [SerializeField] private TrajectoryPreview trajectoryPreview;
 
@@ -223,10 +222,6 @@ namespace Squidbasket.Player
 
         private void PerformReset()
         {
-            if (freeThrowLineAnchor != null)
-            {
-                transform.SetPositionAndRotation(freeThrowLineAnchor.position, freeThrowLineAnchor.rotation);
-            }
 
             _movement.ResetVerticalState();
 

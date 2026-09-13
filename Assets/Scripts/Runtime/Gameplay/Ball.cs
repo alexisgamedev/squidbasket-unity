@@ -105,17 +105,16 @@ namespace Squidbasket.Gameplay
         }
 
         /// <summary>Called by HoopTrigger when this ball passes through the hoop.</summary>
-        public bool NotifyPassedThroughHoop()
+        public int NotifyPassedThroughHoop()
         {
             if (_state != BallState.InFlight || _hasScoredThisShot)
             {
-                return false;
+                return 0;
             }
 
             _hasScoredThisShot = true;
             GameEvents.RaiseShotMade(_releaseZone, _releasePoints);
-
-            return true;
+            return _releasePoints;
         }
 
         private void RecordReleaseZone()

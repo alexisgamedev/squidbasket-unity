@@ -3,6 +3,7 @@ using Squidbasket.Player;
 using UnityEngine;
 using UnityEngine.UI;
 using Squidbasket.Gameplay;
+using TMPro;
 
 namespace Squidbasket.UI
 {
@@ -17,7 +18,7 @@ namespace Squidbasket.UI
         [SerializeField] private PlayerStateController playerStateController;
         [SerializeField] private Ball ball;
 
-        [SerializeField] private Text scoreText;
+        [SerializeField] private TextMeshPro scoreText;
         [SerializeField] private Text streakText;
         [SerializeField] private Text playerStateText;
         [SerializeField] private Text ballStateText;
@@ -37,7 +38,7 @@ namespace Squidbasket.UI
                 _lastScore = scoreSystem.Score;
                 if (scoreText != null)
                 {
-                    scoreText.text = $"Score: {_lastScore}";
+                    scoreText.text = $"{_lastScore}";
                 }
             }
 

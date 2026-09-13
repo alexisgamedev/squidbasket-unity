@@ -10,15 +10,25 @@ namespace Squidbasket.Scoring
     [RequireComponent(typeof(Collider))]
     public sealed class HoopTrigger : MonoBehaviour
     {
-        [SerializeField] ParticleSystem scoreParticles;
+        [SerializeField] ParticleSystem score2pointParticles;
+        [SerializeField] ParticleSystem score3pointParticles;
 
         private void OnTriggerEnter(Collider other)
         {
             var ball = other.GetComponentInParent<Ball>();
-            if(ball != null && ball.NotifyPassedThroughHoop())
+            if(ball != null)
             {
-                scoreParticles.Clear();
-                scoreParticles.Play();
+                switch(ball.NotifyPassedThroughHoop())
+                {
+                    case 2:
+                        score2pointParticles.Clear();
+                        score2pointParticles.Play();
+                        break;
+                    case 3:
+                        score3pointParticles.Clear();
+                        score3pointParticles.Play();
+                        break;
+                }
             }
         }
     }
