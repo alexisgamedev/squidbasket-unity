@@ -90,9 +90,14 @@ namespace Squidbasket.UI
 
             playerInput?.SetInputEnabled(!open);
 
-            if (open && restartButton != null && EventSystem.current != null)
+            if (open)
             {
-                restartButton.Select();
+                if(restartButton != null && EventSystem.current != null)
+                    restartButton.Select();
+            }
+            else
+            {
+                EventSystem.current.SetSelectedGameObject(null);
             }
         }
 
