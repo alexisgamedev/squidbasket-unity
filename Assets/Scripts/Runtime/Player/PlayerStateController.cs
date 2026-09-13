@@ -24,6 +24,11 @@ namespace Squidbasket.Player
         [SerializeField] private Ball ball;
         [SerializeField] private PlayerBallHand ballHand;
 
+        // Hidden during Shooting (first-person) and shown again on returning to Walking —
+        // see ShootingState.Enter/Exit.
+        [SerializeField] private Renderer bodyMeshRenderer;
+        [SerializeField] private Renderer eyesMeshRenderer;
+
         // Deliberately a separate anchor from ballHand.HandAnchor: the ball needs to reposition
         // to a different hand pose when Shooting's first-person aiming takes over, so ShootingState
         // gets its own anchor rather than sharing the one Walking/Retrieval/Reset use.
@@ -81,6 +86,22 @@ namespace Squidbasket.Player
 
             WarnIfAnchorMissing(shootingHandAnchor, nameof(shootingHandAnchor), "Shooting");
 
+            if (bodyMeshRenderer == null)
+            {
+                Debug.LogWarning(
+                    $"{nameof(PlayerStateController)}'s {nameof(bodyMeshRenderer)} is unassigned — the body mesh " +
+                    "will stay visible through the first-person Shooting camera.",
+                    this);
+            }
+
+            if (eyesMeshRenderer == null)
+            {
+                Debug.LogWarning(
+                    $"{nameof(PlayerStateController)}'s {nameof(eyesMeshRenderer)} is unassigned — the eyes mesh " +
+                    "will stay visible through the first-person Shooting camera.",
+                    this);
+            }
+
             if (trajectoryPreview == null)
             {
                 Debug.LogWarning(
@@ -92,7 +113,8 @@ namespace Squidbasket.Player
             var powerBar = new PowerBarOscillator(powerBarMin, powerBarMax, powerBarSpeed);
             _walking = new WalkingState(_movement, input, sharedCamera.transform);
             _shooting = new ShootingState(
-                _movement, powerBar, bulletTimeScale, ball, shootingHandAnchor, ResolveMotionBlur());
+                _movement, powerBar, bulletTimeScale, ball, shootingHandAnchor, ResolveMotionBlur(),
+                bodyMeshRenderer, eyesMeshRenderer);
             _current = _walking;
         }
 

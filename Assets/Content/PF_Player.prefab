@@ -344,6 +344,8 @@ MonoBehaviour:
   cameraPivot: {fileID: 4930275741379792434}
   ball: {fileID: 0}
   ballHand: {fileID: 3024948047053511461}
+  bodyMeshRenderer: {fileID: 8100362661312693609}
+  eyesMeshRenderer: {fileID: 726424843581538354}
   shootingHandAnchor: {fileID: 4102817698901356871}
   input: {fileID: 8116397972595224400}
   trajectoryPreview: {fileID: 0}

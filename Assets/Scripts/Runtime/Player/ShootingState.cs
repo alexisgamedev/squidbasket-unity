@@ -6,11 +6,11 @@ namespace Squidbasket.Player
 {
     /// <summary>
     /// CONTEXT.md "Shooting": Bullet Time engages, the Power Bar starts looping, WASD is locked
-    /// but existing momentum keeps carrying the player (ADR-0002). Owns the Bullet Time and
-    /// motion blur enter/exit side effects, per ADR-0003 — and re-asserts the ball is kinematic
-    /// and attached to the hand on Enter, so Shooting never depends on some other system having
-    /// gotten that right first. PlayerStateController owns making the ball dynamic again
-    /// (Shoot/Drop) at the moment Shooting is exited.
+    /// but existing momentum keeps carrying the player (ADR-0002). Owns the Bullet Time, motion
+    /// blur, and first-person mesh-visibility enter/exit side effects, per ADR-0003 — and
+    /// re-asserts the ball is kinematic and attached to the hand on Enter, so Shooting never
+    /// depends on some other system having gotten that right first. PlayerStateController owns
+    /// making the ball dynamic again (Shoot/Drop) at the moment Shooting is exited.
     /// </summary>
     public sealed class ShootingState : IPlayerState
     {
@@ -20,6 +20,8 @@ namespace Squidbasket.Player
         private readonly Ball _ball;
         private readonly Transform _handAnchor;
         private readonly MotionBlur _motionBlur;
+        private readonly Renderer _bodyMeshRenderer;
+        private readonly Renderer _eyesMeshRenderer;
         private float _previousTimeScale;
 
         public ShootingState(
@@ -28,7 +30,9 @@ namespace Squidbasket.Player
             float bulletTimeScale,
             Ball ball,
             Transform handAnchor,
-            MotionBlur motionBlur)
+            MotionBlur motionBlur,
+            Renderer bodyMeshRenderer,
+            Renderer eyesMeshRenderer)
         {
             _movement = movement;
             _powerBar = powerBar;
@@ -36,6 +40,8 @@ namespace Squidbasket.Player
             _ball = ball;
             _handAnchor = handAnchor;
             _motionBlur = motionBlur;
+            _bodyMeshRenderer = bodyMeshRenderer;
+            _eyesMeshRenderer = eyesMeshRenderer;
         }
 
         public PowerBarOscillator PowerBar => _powerBar;
@@ -50,6 +56,18 @@ namespace Squidbasket.Player
             if (_motionBlur != null)
             {
                 _motionBlur.active = true;
+            }
+
+            // Hidden rather than the third-person Walking view, so the first-person Shooting
+            // camera never clips through the player's own body/eyes model.
+            if (_bodyMeshRenderer != null)
+            {
+                _bodyMeshRenderer.enabled = false;
+            }
+
+            if (_eyesMeshRenderer != null)
+            {
+                _eyesMeshRenderer.enabled = false;
             }
         }
 
@@ -68,6 +86,16 @@ namespace Squidbasket.Player
             if (_motionBlur != null)
             {
                 _motionBlur.active = false;
+            }
+
+            if (_bodyMeshRenderer != null)
+            {
+                _bodyMeshRenderer.enabled = true;
+            }
+
+            if (_eyesMeshRenderer != null)
+            {
+                _eyesMeshRenderer.enabled = true;
             }
         }
     }
