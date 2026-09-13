@@ -1,19 +1,100 @@
+using Squidbasket.Input;
 using UnityEngine;
+using UnityEngine.EventSystems;
+using UnityEngine.InputSystem;
+using UnityEngine.UI;
 
-namespace Squidbasket
+namespace Squidbasket.UI
 {
-    public class MenuWindow : MonoBehaviour
+    /// <summary>
+    /// Esc-toggled pause menu. Flips the sibling <see cref="Canvas"/>'s enabled flag rather than
+    /// deactivating this GameObject, so this script (and its Esc poll) keeps running while the
+    /// menu is hidden. The GraphicRaycaster is toggled alongside it so the invisible menu can't
+    /// intercept clicks while closed, and the player's gameplay actions are disabled alongside it
+    /// so Move/Look/Shoot don't keep running underneath the menu (the Menu action itself lives
+    /// outside PlayerInputSource's tracked set, so Esc still closes the menu regardless).
+    /// Individual controls wire their own persistent UnityEvent calls in the Inspector (e.g.
+    /// Restart button -> ScoreSystem.Restart, Sensitivity slider ->
+    /// ThirdPersonCamera/FirstPersonCamera.SetSensitivity) rather than routing through this
+    /// script — Quit is the one exception, since Application.Quit needs a live instance method.
+    /// </summary>
+    [RequireComponent(typeof(Canvas))]
+    public sealed class MenuWindow : MonoBehaviour
     {
-        // Start is called once before the first execution of Update after the MonoBehaviour is created
-        void Start()
+        [SerializeField] private InputActionReference toggleMenuAction;
+        [SerializeField] private Selectable firstSelectable;
+        [SerializeField] private PlayerInputSource playerInput;
+
+        private Canvas _canvas;
+        private GraphicRaycaster _raycaster;
+
+        private void Awake()
         {
-        
+            _canvas = GetComponent<Canvas>();
+            _raycaster = GetComponent<GraphicRaycaster>();
+
+            if (toggleMenuAction == null || toggleMenuAction.action == null)
+            {
+                Debug.LogError(
+                    $"{nameof(MenuWindow)} has no {nameof(toggleMenuAction)} assigned — Esc will not " +
+                    "open/close the menu.",
+                    this);
+            }
+
+            if (firstSelectable == null)
+            {
+                Debug.LogWarning(
+                    $"{nameof(MenuWindow)} has no {nameof(firstSelectable)} assigned — nothing will be " +
+                    "selected when the menu opens.",
+                    this);
+            }
+
+            if (playerInput == null)
+            {
+                Debug.LogWarning(
+                    $"{nameof(MenuWindow)} has no {nameof(playerInput)} assigned — gameplay input will " +
+                    "keep running underneath the menu while it's open.",
+                    this);
+            }
         }
 
-        // Update is called once per frame
-        void Update()
+        private void OnEnable() => toggleMenuAction?.action?.Enable();
+
+        private void OnDisable() => toggleMenuAction?.action?.Disable();
+
+        private void Update()
         {
-        
+            if (toggleMenuAction != null && toggleMenuAction.action != null
+                && toggleMenuAction.action.WasPressedThisFrame())
+            {
+                SetOpen(!_canvas.enabled);
+            }
+        }
+
+        private void SetOpen(bool open)
+        {
+            _canvas.enabled = open;
+
+            if (_raycaster != null)
+            {
+                _raycaster.enabled = open;
+            }
+
+            playerInput?.SetInputEnabled(!open);
+
+            if (open && firstSelectable != null && EventSystem.current != null)
+            {
+                EventSystem.current.SetSelectedGameObject(firstSelectable.gameObject);
+            }
+        }
+
+        public void Quit()
+        {
+#if UNITY_EDITOR
+            UnityEditor.EditorApplication.isPlaying = false;
+#else
+            Application.Quit();
+#endif
         }
     }
 }

@@ -26,6 +26,11 @@ namespace Squidbasket.Camera
         public float Yaw => _yaw;
         public float Pitch => _pitch;
 
+        /// <summary>Current mouse-look sensitivity, exposed for the pause menu's slider (CLAUDE.md).</summary>
+        public float Sensitivity => sensitivity;
+
+        public void SetSensitivity(float value) => sensitivity = value;
+
         public void SetOrientation(float yaw, float pitch)
         {
             _yaw = yaw;

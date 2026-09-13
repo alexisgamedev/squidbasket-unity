@@ -19,6 +19,13 @@ namespace Squidbasket.Player
 
         private LineRenderer _lineRenderer;
         private Vector3[] _sampleBuffer;
+        private bool _previewEnabled = true;
+
+        // Tracks PlayerStateController's Show()/Hide() intent separately from _previewEnabled so
+        // toggling the menu Toggle back on mid-Shooting (Show() already having been called for
+        // this shot) re-displays the line immediately rather than waiting for the next Shooting
+        // entry.
+        private bool _showRequested;
 
         private LineRenderer LineRendererComponent =>
             _lineRenderer != null ? _lineRenderer : (_lineRenderer = GetComponent<LineRenderer>());
@@ -29,13 +36,24 @@ namespace Squidbasket.Player
             _sampleBuffer = new Vector3[maxSamples];
         }
 
+        // Gates Show()/Hide() rather than replacing them: PlayerStateController still owns *when*
+        // the preview would be shown during Shooting (CONTEXT.md); this only owns *whether* the
+        // player has opted into seeing it at all (menu Toggle).
+        public void SetPreviewEnabled(bool enabled)
+        {
+            _previewEnabled = enabled;
+            LineRendererComponent.enabled = _previewEnabled && _showRequested;
+        }
+
         public void Show()
         {
-            LineRendererComponent.enabled = true;
+            _showRequested = true;
+            LineRendererComponent.enabled = _previewEnabled;
         }
 
         public void Hide()
         {
+            _showRequested = false;
             LineRendererComponent.enabled = false;
         }
 

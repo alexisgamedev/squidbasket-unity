@@ -77,5 +77,26 @@ namespace Squidbasket.Input
                 reference?.action?.Disable();
             }
         }
+
+        /// <summary>
+        /// Enables/disables every tracked gameplay action at once — used by the pause menu
+        /// (MenuWindow) so Move/Look/Shoot/Reset/Restart/Jump go dead while it's open, rather
+        /// than racing the player's clicks on menu controls (the Menu action itself lives outside
+        /// this set, so Esc still closes the menu regardless of this state).
+        /// </summary>
+        public void SetInputEnabled(bool enabled)
+        {
+            foreach (InputActionReference reference in _actions)
+            {
+                if (enabled)
+                {
+                    reference?.action?.Enable();
+                }
+                else
+                {
+                    reference?.action?.Disable();
+                }
+            }
+        }
     }
 }
