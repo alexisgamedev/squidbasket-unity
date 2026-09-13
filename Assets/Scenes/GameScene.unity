@@ -6971,6 +6971,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1746016557}
   - component: {fileID: 1746016556}
+  - component: {fileID: 1746016558}
   m_Layer: 0
   m_Name: LineRenderer
   m_TagString: Untagged
@@ -7100,6 +7101,21 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1746016558
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1746016555}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 55a1f0b32f4d3c54792c46c778e20137, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  timeStep: 0.05
+  maxSamples: 60
+  groundY: 0
 --- !u!1 &1748437208 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 5148817236446094103, guid: 33428034efeaf2a4b95ed6849ddec542, type: 3}
@@ -7778,6 +7794,10 @@ PrefabInstance:
       propertyPath: thirdPersonCamera
       value: 
       objectReference: {fileID: 330585549}
+    - target: {fileID: 8899301593375202345, guid: c593e5f08071b2e418dcd1ea6f19fdac, type: 3}
+      propertyPath: trajectoryPreview
+      value: 
+      objectReference: {fileID: 1746016558}
     - target: {fileID: 8899301593375202345, guid: c593e5f08071b2e418dcd1ea6f19fdac, type: 3}
       propertyPath: freeThrowLineAnchor
       value: 

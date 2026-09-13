@@ -29,6 +29,7 @@ namespace Squidbasket.Player
 
         [SerializeField] private Transform freeThrowLineAnchor;
         [SerializeField] private PlayerInputSource input;
+        [SerializeField] private TrajectoryPreview trajectoryPreview;
 
         [Header("Shooting")]
         [SerializeField] private float powerBarMin;
@@ -73,6 +74,14 @@ namespace Squidbasket.Player
             }
 
             WarnIfAnchorMissing(shootingHandAnchor, nameof(shootingHandAnchor), "Shooting");
+
+            if (trajectoryPreview == null)
+            {
+                Debug.LogWarning(
+                    $"{nameof(PlayerStateController)}'s {nameof(trajectoryPreview)} is unassigned — no trajectory " +
+                    "preview will be shown during Shooting.",
+                    this);
+            }
 
             var powerBar = new PowerBarOscillator(powerBarMin, powerBarMax, powerBarSpeed);
             _walking = new WalkingState(_movement, input, sharedCamera.transform);
@@ -140,6 +149,8 @@ namespace Squidbasket.Player
                 _current.Exit();
                 _current = _shooting;
                 _current.Enter();
+                trajectoryPreview?.Show();
+                UpdateTrajectoryPreview();
                 return;
             }
 
@@ -154,12 +165,15 @@ namespace Squidbasket.Player
         private void TickShooting(float deltaTime)
         {
             _current.Tick(deltaTime);
+            UpdateTrajectoryPreview();
 
             bool shootReleased = !input.ShootHeld;
             bool timedOut = _shooting.PowerBar.HasTimedOut;
 
             if (_fsm.TryExitShooting(shootReleased, timedOut))
             {
+                trajectoryPreview?.Hide();
+
                 // A same-frame release and timeout favors the release (ADR-0002: Shot Timeout is
                 // the cost of holding through 2.5 loops *without* releasing, not a way to steal
                 // an intentionally-released shot away from the player).
@@ -186,10 +200,25 @@ namespace Squidbasket.Player
                 return;
             }
 
-            float normalizedPower = PowerBarNormalizedValue;
-            Vector3 velocity = ShotCalculator.ComputeLaunchVelocity(
-                sharedCamera.transform.forward, normalizedPower, shotUpArcScale, shotSpeed);
-            ball.Shoot(velocity);
+            ball.Shoot(ComputeLaunchVelocity());
+        }
+
+        // Shared by FireShot and the trajectory preview so the preview can never draw an arc the
+        // real Shot wouldn't actually follow.
+        private Vector3 ComputeLaunchVelocity()
+        {
+            return ShotCalculator.ComputeLaunchVelocity(
+                sharedCamera.transform.forward, PowerBarNormalizedValue, shotUpArcScale, shotSpeed);
+        }
+
+        private void UpdateTrajectoryPreview()
+        {
+            if (trajectoryPreview == null || shootingHandAnchor == null)
+            {
+                return;
+            }
+
+            trajectoryPreview.UpdateTrajectory(shootingHandAnchor.position, ComputeLaunchVelocity());
         }
 
         private void PerformReset()
