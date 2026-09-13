@@ -344,15 +344,16 @@ MonoBehaviour:
   ball: {fileID: 0}
   ballHand: {fileID: 3024948047053511461}
   shootingHandAnchor: {fileID: 4102817698901356871}
-  freeThrowLineAnchor: {fileID: 0}
   input: {fileID: 8116397972595224400}
+  trajectoryPreview: {fileID: 0}
+  globalVolume: {fileID: 0}
   powerBarMin: 0
   powerBarMax: 1
   powerBarSpeed: 1
   bulletTimeScale: 0.3
-  shotSpeed: 10
-  shotUpArcScale: 3
-  cameraBlendSpeed: 8
+  shotSpeed: 12.5
+  shotUpArcScale: 2.75
+  cameraBlendSpeed: 24
 --- !u!114 &3024948047053511461
 MonoBehaviour:
   m_ObjectHideFlags: 0

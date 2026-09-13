@@ -292,7 +292,7 @@ MonoBehaviour:
     m_Alignment: 4
     m_AlignByGeometry: 0
     m_RichText: 1
-    m_HorizontalOverflow: 0
+    m_HorizontalOverflow: 1
     m_VerticalOverflow: 0
     m_LineSpacing: 1
   m_Text: Camera Sensitivity
@@ -2223,6 +2223,18 @@ MonoBehaviour:
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 1592048426}
+        m_TargetAssemblyTypeName: Squidbasket.UI.MenuWindow, Squidbasket.Runtime
+        m_MethodName: SetCameraSensitivity
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
@@ -12190,6 +12202,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   toggleMenuAction: {fileID: 1367127578270816058, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   restartButton: {fileID: 769792303}
+  sensitivityText: {fileID: 188727021}
   scoreSystem: {fileID: 1977949534}
   playerInput: {fileID: 1856715902288620345}
 --- !u!1 &1594340488
@@ -13415,10 +13428,6 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 9015542419697874459}
     - target: {fileID: 8899301593375202345, guid: c593e5f08071b2e418dcd1ea6f19fdac, type: 3}
-      propertyPath: shotSpeed
-      value: 13
-      objectReference: {fileID: 0}
-    - target: {fileID: 8899301593375202345, guid: c593e5f08071b2e418dcd1ea6f19fdac, type: 3}
       propertyPath: globalVolume
       value: 
       objectReference: {fileID: 832575518}
@@ -13426,14 +13435,6 @@ PrefabInstance:
       propertyPath: sharedCamera
       value: 
       objectReference: {fileID: 330585545}
-    - target: {fileID: 8899301593375202345, guid: c593e5f08071b2e418dcd1ea6f19fdac, type: 3}
-      propertyPath: shotUpArcScale
-      value: 2.75
-      objectReference: {fileID: 0}
-    - target: {fileID: 8899301593375202345, guid: c593e5f08071b2e418dcd1ea6f19fdac, type: 3}
-      propertyPath: cameraBlendSpeed
-      value: 24
-      objectReference: {fileID: 0}
     - target: {fileID: 8899301593375202345, guid: c593e5f08071b2e418dcd1ea6f19fdac, type: 3}
       propertyPath: firstPersonCamera
       value: 
