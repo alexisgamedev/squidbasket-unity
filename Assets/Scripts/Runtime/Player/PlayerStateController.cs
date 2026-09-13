@@ -3,6 +3,8 @@ using Squidbasket.Gameplay;
 using Squidbasket.Input;
 using Squidbasket.Scoring;
 using UnityEngine;
+using UnityEngine.Rendering;
+using UnityEngine.Rendering.Universal;
 
 namespace Squidbasket.Player
 {
@@ -29,6 +31,11 @@ namespace Squidbasket.Player
 
         [SerializeField] private PlayerInputSource input;
         [SerializeField] private TrajectoryPreview trajectoryPreview;
+
+        // The MotionBlur override lives on this Volume's profile (CONTEXT.md "Bullet Time" —
+        // motion blur reinforces the slowdown feel during Shooting) and is disabled by default in
+        // the profile asset so Walking never shows it.
+        [SerializeField] private Volume globalVolume;
 
         [Header("Shooting")]
         [SerializeField] private float powerBarMin;
@@ -84,8 +91,32 @@ namespace Squidbasket.Player
 
             var powerBar = new PowerBarOscillator(powerBarMin, powerBarMax, powerBarSpeed);
             _walking = new WalkingState(_movement, input, sharedCamera.transform);
-            _shooting = new ShootingState(_movement, powerBar, bulletTimeScale, ball, shootingHandAnchor);
+            _shooting = new ShootingState(
+                _movement, powerBar, bulletTimeScale, ball, shootingHandAnchor, ResolveMotionBlur());
             _current = _walking;
+        }
+
+        private MotionBlur ResolveMotionBlur()
+        {
+            if (globalVolume == null || globalVolume.profile == null)
+            {
+                Debug.LogWarning(
+                    $"{nameof(PlayerStateController)}'s {nameof(globalVolume)} (or its profile) is unassigned — " +
+                    "no motion blur will be shown during Shooting.",
+                    this);
+                return null;
+            }
+
+            if (!globalVolume.profile.TryGet(out MotionBlur motionBlur))
+            {
+                Debug.LogWarning(
+                    $"{nameof(PlayerStateController)}'s {nameof(globalVolume)} profile has no MotionBlur override " +
+                    "— no motion blur will be shown during Shooting.",
+                    this);
+                return null;
+            }
+
+            return motionBlur;
         }
 
         private void WarnIfAnchorMissing(Transform anchor, string fieldName, string usedDuring)

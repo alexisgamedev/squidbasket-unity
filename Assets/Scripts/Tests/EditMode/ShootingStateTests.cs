@@ -2,6 +2,7 @@ using NUnit.Framework;
 using Squidbasket.Gameplay;
 using Squidbasket.Player;
 using UnityEngine;
+using UnityEngine.Rendering.Universal;
 
 namespace Squidbasket.Tests
 {
@@ -13,6 +14,7 @@ namespace Squidbasket.Tests
         private Ball _ball;
         private Rigidbody _rigidbody;
         private GameObject _handObject;
+        private MotionBlur _motionBlur;
 
         [SetUp]
         public void SetUp()
@@ -25,6 +27,8 @@ namespace Squidbasket.Tests
             _rigidbody = _ballObject.GetComponent<Rigidbody>();
 
             _handObject = new GameObject("Hand");
+
+            _motionBlur = ScriptableObject.CreateInstance<MotionBlur>();
         }
 
         [TearDown]
@@ -33,13 +37,15 @@ namespace Squidbasket.Tests
             Object.DestroyImmediate(_playerObject);
             Object.DestroyImmediate(_ballObject);
             Object.DestroyImmediate(_handObject);
+            Object.DestroyImmediate(_motionBlur);
         }
 
         [Test]
         public void Enter_AttachesBallToHandAndMakesItKinematic()
         {
             var powerBar = new PowerBarOscillator(0f, 1f, 1f);
-            var state = new ShootingState(_movement, powerBar, bulletTimeScale: 0.3f, _ball, _handObject.transform);
+            var state = new ShootingState(
+                _movement, powerBar, bulletTimeScale: 0.3f, _ball, _handObject.transform, _motionBlur);
 
             try
             {
@@ -58,7 +64,8 @@ namespace Squidbasket.Tests
         public void Enter_WithNoBallAssigned_DoesNotThrow()
         {
             var powerBar = new PowerBarOscillator(0f, 1f, 1f);
-            var state = new ShootingState(_movement, powerBar, bulletTimeScale: 0.3f, ball: null, handAnchor: null);
+            var state = new ShootingState(
+                _movement, powerBar, bulletTimeScale: 0.3f, ball: null, handAnchor: null, motionBlur: _motionBlur);
 
             try
             {
@@ -67,6 +74,56 @@ namespace Squidbasket.Tests
             finally
             {
                 state.Exit();
+            }
+        }
+
+        [Test]
+        public void Enter_ActivatesMotionBlur()
+        {
+            _motionBlur.active = false;
+            var powerBar = new PowerBarOscillator(0f, 1f, 1f);
+            var state = new ShootingState(
+                _movement, powerBar, bulletTimeScale: 0.3f, _ball, _handObject.transform, _motionBlur);
+
+            try
+            {
+                state.Enter();
+
+                Assert.IsTrue(_motionBlur.active);
+            }
+            finally
+            {
+                state.Exit();
+            }
+        }
+
+        [Test]
+        public void Exit_DeactivatesMotionBlur()
+        {
+            var powerBar = new PowerBarOscillator(0f, 1f, 1f);
+            var state = new ShootingState(
+                _movement, powerBar, bulletTimeScale: 0.3f, _ball, _handObject.transform, _motionBlur);
+            state.Enter();
+
+            state.Exit();
+
+            Assert.IsFalse(_motionBlur.active, "Motion blur must not still be active once Walking is re-entered");
+        }
+
+        [Test]
+        public void Enter_WithNoMotionBlurAssigned_DoesNotThrow()
+        {
+            var powerBar = new PowerBarOscillator(0f, 1f, 1f);
+            var state = new ShootingState(
+                _movement, powerBar, bulletTimeScale: 0.3f, _ball, _handObject.transform, motionBlur: null);
+
+            try
+            {
+                Assert.DoesNotThrow(() => state.Enter());
+            }
+            finally
+            {
+                Assert.DoesNotThrow(() => state.Exit());
             }
         }
     }

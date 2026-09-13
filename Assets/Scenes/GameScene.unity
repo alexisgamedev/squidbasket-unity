@@ -12789,8 +12789,12 @@ PrefabInstance:
       objectReference: {fileID: 1746016558}
     - target: {fileID: 8899301593375202345, guid: c593e5f08071b2e418dcd1ea6f19fdac, type: 3}
       propertyPath: freeThrowLineAnchor
-      value: 
+      value:
       objectReference: {fileID: 1366719802}
+    - target: {fileID: 8899301593375202345, guid: c593e5f08071b2e418dcd1ea6f19fdac, type: 3}
+      propertyPath: globalVolume
+      value:
+      objectReference: {fileID: 832575518}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
