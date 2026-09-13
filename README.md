@@ -1,8 +1,8 @@
-# squidbasket-unity
+# Squid Basketball
 
 A 3D arcade basketball shooter built in Unity 6 (URP): aim and power a shot from anywhere on the
-court against a single hoop, score-attack style, balancing realism against arcade feel.
-Desktop-only, single-player, no monetization.
+court against a single hoop, balancing realism against arcade feel.
+Desktop-only, single-player.
 
 - Editor version: **6000.0.58f2** (see `ProjectSettings/ProjectVersion.txt`)
 - Render pipeline: URP
