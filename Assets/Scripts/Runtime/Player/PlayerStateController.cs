@@ -18,8 +18,9 @@ namespace Squidbasket.Player
     {
         [Header("References")]
         [SerializeField] private UnityEngine.Camera sharedCamera;
-        [SerializeField] private ThirdPersonCamera thirdPersonCamera;
-        [SerializeField] private FirstPersonCamera firstPersonCamera;
+        private ThirdPersonCamera thirdPersonCamera;
+        private FirstPersonCamera firstPersonCamera;
+
         [SerializeField] private Transform cameraPivot;
         [SerializeField] private Ball ball;
         [SerializeField] private PlayerBallHand ballHand;
@@ -42,29 +43,15 @@ namespace Squidbasket.Player
         // the profile asset so Walking never shows it.
         [SerializeField] private Volume globalVolume;
 
-        [Header("Shooting")]
-        [SerializeField] private float powerBarMin;
-        [SerializeField] private float powerBarMax = 1f;
-        [SerializeField] private float powerBarSpeed = 1f;
-        [SerializeField] private float bulletTimeScale = 0.3f;
-        [SerializeField] private float shotSpeed = 12f;
-        [SerializeField] private float shotUpArcScale = 0.6f;
         [SerializeField] private float cameraBlendSpeed = 8f;
 
         private PlayerMovement _movement;
         private PlayerFsm _fsm;
-        private WalkingState _walking;
-        private ShootingState _shooting;
+        [SerializeField] private WalkingState _walking;
+        [SerializeField] private ShootingState _shooting;
         private IPlayerState _current;
 
         public bool IsShooting => _fsm.Current == PlayerLifecycleState.Shooting;
-
-        // Deliberately not gated on IsShooting: FireShot() reads this at the exact moment the
-        // FSM has already flipped back to Walking, so gating here would always read 0 right when
-        // it matters most. Callers that need "is the bar currently visible" should check
-        // IsShooting themselves alongside this value.
-        public float PowerBarNormalizedValue =>
-            Mathf.InverseLerp(powerBarMin, powerBarMax, _shooting.PowerBar.CurrentValue);
 
         private void Awake()
         {
@@ -110,10 +97,12 @@ namespace Squidbasket.Player
                     this);
             }
 
-            var powerBar = new PowerBarOscillator(powerBarMin, powerBarMax, powerBarSpeed);
-            _walking = new WalkingState(_movement, input, sharedCamera.transform);
-            _shooting = new ShootingState(
-                _movement, powerBar, bulletTimeScale, ball, shootingHandAnchor, ResolveMotionBlur(),
+            firstPersonCamera = sharedCamera.GetComponent<FirstPersonCamera>();
+            thirdPersonCamera = sharedCamera.GetComponent<ThirdPersonCamera>();
+
+            _walking.Init(_movement, input, sharedCamera.transform);
+            _shooting.Init(
+                _movement, ball, shootingHandAnchor, ResolveMotionBlur(),
                 bodyMeshRenderer, eyesMeshRenderer);
             _current = _walking;
         }
@@ -260,7 +249,7 @@ namespace Squidbasket.Player
         private Vector3 ComputeLaunchVelocity()
         {
             return ShotCalculator.ComputeLaunchVelocity(
-                sharedCamera.transform.forward, PowerBarNormalizedValue, shotUpArcScale, shotSpeed);
+                sharedCamera.transform.forward, _shooting.PowerBarNormalizedValue, _shooting.ShotUpArcScale, _shooting.ShotSpeed);
         }
 
         private void UpdateTrajectoryPreview()

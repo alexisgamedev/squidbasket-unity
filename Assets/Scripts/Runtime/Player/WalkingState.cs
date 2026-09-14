@@ -6,13 +6,14 @@ namespace Squidbasket.Player
     /// <summary>
     /// Default state (CONTEXT.md "Walking"): WASD movement relative to the camera, ball carried.
     /// </summary>
+    [System.Serializable]
     public sealed class WalkingState : IPlayerState
     {
-        private readonly PlayerMovement _movement;
-        private readonly PlayerInputSource _input;
-        private readonly Transform _cameraTransform;
+        private PlayerMovement _movement;
+        private PlayerInputSource _input;
+        private Transform _cameraTransform;
 
-        public WalkingState(PlayerMovement movement, PlayerInputSource input, Transform cameraTransform)
+        public void Init(PlayerMovement movement, PlayerInputSource input, Transform cameraTransform)
         {
             _movement = movement;
             _input = input;

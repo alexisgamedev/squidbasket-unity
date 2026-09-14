@@ -12,19 +12,35 @@ namespace Squidbasket.Player
     /// depends on some other system having gotten that right first. PlayerStateController owns
     /// making the ball dynamic again (Shoot/Drop) at the moment Shooting is exited.
     /// </summary>
+    [System.Serializable]
     public sealed class ShootingState : IPlayerState
     {
-        private readonly PlayerMovement _movement;
-        private readonly PowerBarOscillator _powerBar;
-        private readonly float _bulletTimeScale;
-        private readonly Ball _ball;
-        private readonly Transform _handAnchor;
-        private readonly MotionBlur _motionBlur;
-        private readonly Renderer _bodyMeshRenderer;
-        private readonly Renderer _eyesMeshRenderer;
+        private PlayerMovement _movement;
+        private PowerBarOscillator _powerBar;
+        private float _bulletTimeScale;
+        private Ball _ball;
+        private Transform _handAnchor;
+        private MotionBlur _motionBlur;
+        private Renderer _bodyMeshRenderer;
+        private Renderer _eyesMeshRenderer;
         private float _previousTimeScale;
 
-        public ShootingState(
+        [SerializeField] private float powerBarMin;
+        [SerializeField] private float powerBarMax = 1f;
+        [SerializeField] private float powerBarSpeed = 1f;
+        [SerializeField] private float shotSpeed = 12f;
+        [SerializeField] private float shotUpArcScale = 0.6f;
+        [SerializeField] private float bulletTimeScale = 0.3f;
+
+        public float ShotSpeed => shotSpeed;
+        public float ShotUpArcScale => shotUpArcScale;
+
+        public PowerBarOscillator PowerBar => _powerBar;
+
+        public float PowerBarNormalizedValue =>
+            Mathf.InverseLerp(powerBarMin, powerBarMax, _powerBar.CurrentValue);
+
+        public void Init(
             PlayerMovement movement,
             PowerBarOscillator powerBar,
             float bulletTimeScale,
@@ -44,7 +60,23 @@ namespace Squidbasket.Player
             _eyesMeshRenderer = eyesMeshRenderer;
         }
 
-        public PowerBarOscillator PowerBar => _powerBar;
+        public void Init(
+            PlayerMovement movement,
+            Ball ball,
+            Transform handAnchor,
+            MotionBlur motionBlur,
+            Renderer bodyMeshRenderer,
+            Renderer eyesMeshRenderer)
+        {
+            _movement = movement;
+            _powerBar = new PowerBarOscillator(powerBarMin, powerBarMax, powerBarSpeed);
+            _bulletTimeScale = bulletTimeScale;
+            _ball = ball;
+            _handAnchor = handAnchor;
+            _motionBlur = motionBlur;
+            _bodyMeshRenderer = bodyMeshRenderer;
+            _eyesMeshRenderer = eyesMeshRenderer;
+        }
 
         public void Enter()
         {

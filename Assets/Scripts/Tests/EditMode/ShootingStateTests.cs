@@ -56,7 +56,8 @@ namespace Squidbasket.Tests
         public void Enter_AttachesBallToHandAndMakesItKinematic()
         {
             var powerBar = new PowerBarOscillator(0f, 1f, 1f);
-            var state = new ShootingState(
+            var state = new ShootingState();
+            state.Init(
                 _movement, powerBar, bulletTimeScale: 0.3f, _ball, _handObject.transform, _motionBlur,
                 _bodyMeshRenderer, _eyesMeshRenderer);
 
@@ -77,8 +78,9 @@ namespace Squidbasket.Tests
         public void Enter_WithNoBallAssigned_DoesNotThrow()
         {
             var powerBar = new PowerBarOscillator(0f, 1f, 1f);
-            var state = new ShootingState(
-                _movement, powerBar, bulletTimeScale: 0.3f, ball: null, handAnchor: null, motionBlur: _motionBlur,
+            var state = new ShootingState();
+            state.Init(
+                _movement, powerBar, 0.3f, ball: null, handAnchor: null, motionBlur: _motionBlur,
                 bodyMeshRenderer: _bodyMeshRenderer, eyesMeshRenderer: _eyesMeshRenderer);
 
             try
@@ -96,7 +98,8 @@ namespace Squidbasket.Tests
         {
             _motionBlur.active = false;
             var powerBar = new PowerBarOscillator(0f, 1f, 1f);
-            var state = new ShootingState(
+            var state = new ShootingState();
+            state.Init(
                 _movement, powerBar, bulletTimeScale: 0.3f, _ball, _handObject.transform, _motionBlur,
                 _bodyMeshRenderer, _eyesMeshRenderer);
 
@@ -116,7 +119,8 @@ namespace Squidbasket.Tests
         public void Exit_DeactivatesMotionBlur()
         {
             var powerBar = new PowerBarOscillator(0f, 1f, 1f);
-            var state = new ShootingState(
+            var state = new ShootingState();
+            state.Init(
                 _movement, powerBar, bulletTimeScale: 0.3f, _ball, _handObject.transform, _motionBlur,
                 _bodyMeshRenderer, _eyesMeshRenderer);
             state.Enter();
@@ -130,7 +134,8 @@ namespace Squidbasket.Tests
         public void Enter_WithNoMotionBlurAssigned_DoesNotThrow()
         {
             var powerBar = new PowerBarOscillator(0f, 1f, 1f);
-            var state = new ShootingState(
+            var state = new ShootingState();
+            state.Init(
                 _movement, powerBar, bulletTimeScale: 0.3f, _ball, _handObject.transform, motionBlur: null,
                 bodyMeshRenderer: _bodyMeshRenderer, eyesMeshRenderer: _eyesMeshRenderer);
 
@@ -148,7 +153,8 @@ namespace Squidbasket.Tests
         public void Enter_HidesBodyAndEyesMeshRenderers()
         {
             var powerBar = new PowerBarOscillator(0f, 1f, 1f);
-            var state = new ShootingState(
+            var state = new ShootingState();
+            state.Init(
                 _movement, powerBar, bulletTimeScale: 0.3f, _ball, _handObject.transform, _motionBlur,
                 _bodyMeshRenderer, _eyesMeshRenderer);
 
@@ -169,7 +175,8 @@ namespace Squidbasket.Tests
         public void Exit_ShowsBodyAndEyesMeshRenderers()
         {
             var powerBar = new PowerBarOscillator(0f, 1f, 1f);
-            var state = new ShootingState(
+            var state = new ShootingState();
+            state.Init(
                 _movement, powerBar, bulletTimeScale: 0.3f, _ball, _handObject.transform, _motionBlur,
                 _bodyMeshRenderer, _eyesMeshRenderer);
             state.Enter();
@@ -184,7 +191,8 @@ namespace Squidbasket.Tests
         public void Enter_WithNoMeshRenderersAssigned_DoesNotThrow()
         {
             var powerBar = new PowerBarOscillator(0f, 1f, 1f);
-            var state = new ShootingState(
+            var state = new ShootingState();
+            state.Init(
                 _movement, powerBar, bulletTimeScale: 0.3f, _ball, _handObject.transform, _motionBlur,
                 bodyMeshRenderer: null, eyesMeshRenderer: null);
 
